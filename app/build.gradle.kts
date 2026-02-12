@@ -1,7 +1,21 @@
+import java.util.Properties
+import kotlin.apply
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.compose)
 }
+
+// Load local.properties (Kotlin DSL)
+val localProps = Properties().apply {
+    val lpFile = rootProject.file("local.properties")
+    if (lpFile.exists()) {
+        lpFile.inputStream().use { load(it) }
+    }
+}
+
+// Read key name from local.properties. Example key name: googleMapsApiKey=YOUR_KEY
+val mapsKey: String = localProps.getProperty("googleMapsApiKey") ?: ""
 
 android {
     namespace = "com.betanooblabs.geoguesserandroidclone"
@@ -17,6 +31,14 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        manifestPlaceholders["googleMapsApiKey"] = mapsKey
+
+        buildConfigField(
+            "String",
+            "Google_Maps_API_Key",
+            "\"$mapsKey\""
+        )
     }
 
     buildTypes {
@@ -33,6 +55,7 @@ android {
         targetCompatibility = JavaVersion.VERSION_11
     }
     buildFeatures {
+        buildConfig = true
         compose = true
     }
 }
@@ -54,7 +77,16 @@ dependencies {
     debugImplementation(libs.androidx.compose.ui.tooling)
     debugImplementation(libs.androidx.compose.ui.test.manifest)
 
+    // Coil for gif
     implementation(libs.coil.compose)
     implementation(libs.coil.gif)
 
+    // Jetpack Compose bindings for the Maps SDK
+    implementation(libs.play.services.maps)
+    implementation(libs.maps.compose)
+    implementation(libs.places)
+    implementation(libs.android.maps.utils)
+
+    // for navigation in compose
+    implementation(libs.androidx.navigation.compose)
 }
