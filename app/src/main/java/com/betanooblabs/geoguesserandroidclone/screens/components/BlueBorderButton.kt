@@ -13,6 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.betanooblabs.geoguesserandroidclone.ui.theme.custom_blue
 
 @Composable
 fun BlueBorderButton(
@@ -26,7 +27,7 @@ fun BlueBorderButton(
             //.width(220.dp)
             .height(50.dp),
         shape = RoundedCornerShape(14.dp),
-        border = BorderStroke(2.dp, Color.Blue),
+        border = BorderStroke(2.dp, custom_blue),
         colors = ButtonDefaults.outlinedButtonColors(
             containerColor = Color.Black,
             contentColor = Color.White

@@ -40,8 +40,8 @@ fun HomeScreen(
 
         Column(
             modifier = Modifier
-                .align(Alignment.TopCenter)
-                .padding(top = 10.dp),
+                .align(Alignment.TopCenter),
+                //.padding(top = 10.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
 
