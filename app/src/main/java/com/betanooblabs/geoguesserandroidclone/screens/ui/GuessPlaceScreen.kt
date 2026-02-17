@@ -53,6 +53,7 @@ import com.betanooblabs.geoguesserandroidclone.screens.components.BlueBorderButt
 import com.betanooblabs.geoguesserandroidclone.screens.viewModel.GuessPlaceScreenViewModel
 import com.betanooblabs.geoguesserandroidclone.ui.theme.custom_yellow
 import com.google.android.gms.maps.CameraUpdateFactory
+import com.google.android.gms.maps.StreetViewPanorama
 import com.google.android.gms.maps.StreetViewPanoramaView
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.Dash
@@ -75,14 +76,15 @@ fun GuessPlaceScreen(
     val isConfirmed by viewModel.isConfirmed
     val score by viewModel.score
     val distance by viewModel.distanceMiles
-    val round by viewModel.round
+    val round by viewModel.roundIndex
     val userGuess by viewModel.userGuess
+    val actualLocation = viewModel.actualLocation
 
     Box(modifier = Modifier.fillMaxSize()) {
 
         StreetViewContainer(
-            latitude = viewModel.actualLocation.latitude,
-            longitude = viewModel.actualLocation.longitude,
+            latitude = actualLocation.latitude,
+            longitude = actualLocation.longitude,
             modifier = Modifier.fillMaxSize()
         )
 
@@ -93,11 +95,12 @@ fun GuessPlaceScreen(
             modifier = Modifier.align(Alignment.TopCenter)
         ) {
             ScoreBoard(
-                round = round,
+                round = round+1,
                 score = score ?: 0,
                 distanceMiles = distance ?: 0.0,
                 onNextRoundClick = {
-                    // logic later
+                    isMapOpen.value = false
+                    viewModel.nextRound()
                 }
             )
         }
@@ -139,20 +142,25 @@ fun StreetViewContainer(
     longitude: Double,
     modifier: Modifier = Modifier
 ) {
+    var panorama by remember { mutableStateOf<StreetViewPanorama?>(null) }
+
     AndroidView(
         modifier = modifier,
         factory = { context ->
             StreetViewPanoramaView(context).apply {
                 onCreate(null)
-                getStreetViewPanoramaAsync { panorama ->
-                    panorama.setPosition(LatLng(latitude, longitude))
-                    panorama.isUserNavigationEnabled = true
-                    panorama.isZoomGesturesEnabled = true
-                    panorama.isPanningGesturesEnabled = true
+                getStreetViewPanoramaAsync {
+                    panorama = it
+                    panorama!!.isUserNavigationEnabled = true
+                    panorama!!.isZoomGesturesEnabled = true
+                    panorama!!.isPanningGesturesEnabled = true
+                    panorama!!.isStreetNamesEnabled = false
                 }
             }
         },
-        update = { }
+        update = {
+            panorama?.setPosition(LatLng(latitude, longitude))
+        }
     )
 }
 

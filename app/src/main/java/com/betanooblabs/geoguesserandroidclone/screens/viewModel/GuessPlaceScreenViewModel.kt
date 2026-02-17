@@ -4,12 +4,20 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
+import com.betanooblabs.geoguesserandroidclone.Constants
 import com.google.android.gms.maps.model.LatLng
 
 class GuessPlaceScreenViewModel : ViewModel() {
 
-    // Actual Street View location (fixed for now)
-    val actualLocation = LatLng(40.689247, -74.044502)
+    private val roundPlaces = Constants.getRandomFivePlaces()
+
+    private val _roundIndex = mutableStateOf(0)
+    val roundIndex: State<Int> = _roundIndex
+
+    val totalRounds = 5
+
+    val actualLocation: LatLng
+        get() = roundPlaces[_roundIndex.value]
 
     private val _userGuess = mutableStateOf<LatLng?>(null)
     val userGuess: State<LatLng?> = _userGuess
@@ -26,12 +34,15 @@ class GuessPlaceScreenViewModel : ViewModel() {
     private val _score = mutableStateOf<Int?>(null)
     val score: State<Int?> = _score
 
-    private val _round = mutableIntStateOf(1)
-    val round: State<Int> = _round
+    /*private val _round = mutableIntStateOf(1)
+    val round: State<Int> = _round*/
 
     fun nextRound() {
-        _round.intValue += 1
-        reset()
+
+        if (_roundIndex.value < totalRounds - 1) {
+            _roundIndex.value += 1
+            resetRound()
+        }
     }
 
     fun onCameraAnimationDone() {
@@ -88,8 +99,11 @@ class GuessPlaceScreenViewModel : ViewModel() {
         return score.toInt().coerceAtLeast(0)
     }
 
-    fun reset() {
+    private fun resetRound() {
         _userGuess.value = null
         _isConfirmed.value = false
+        _distanceMiles.value = null
+        _score.value = null
+        _shouldAnimateCamera.value = false
     }
 }
