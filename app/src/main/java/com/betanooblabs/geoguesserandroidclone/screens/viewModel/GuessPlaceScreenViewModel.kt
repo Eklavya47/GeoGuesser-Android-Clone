@@ -2,9 +2,11 @@ package com.betanooblabs.geoguesserandroidclone.screens.viewModel
 
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import com.betanooblabs.geoguesserandroidclone.Constants
+import com.betanooblabs.geoguesserandroidclone.model.RoundResult
 import com.google.android.gms.maps.model.LatLng
 
 class GuessPlaceScreenViewModel : ViewModel() {
@@ -37,6 +39,15 @@ class GuessPlaceScreenViewModel : ViewModel() {
     /*private val _round = mutableIntStateOf(1)
     val round: State<Int> = _round*/
 
+    private val _totalScore = mutableIntStateOf(0)
+    val totalScore: State<Int> = _totalScore
+
+    val isGameOver: Boolean
+        get() = _roundIndex.value == totalRounds - 1
+
+    private val _roundResults = mutableStateListOf<RoundResult>()
+    val roundResults: List<RoundResult> = _roundResults
+
     fun nextRound() {
 
         if (_roundIndex.value < totalRounds - 1) {
@@ -60,8 +71,21 @@ class GuessPlaceScreenViewModel : ViewModel() {
             _shouldAnimateCamera.value = true
 
             val distance = calculateDistanceMiles(userGuess.value!!, actualLocation)
+            val roundScore = calculateScore(distance)
+
             _distanceMiles.value = distance
-            _score.value = calculateScore(distance)
+            _score.value = roundScore
+
+            _totalScore.intValue += roundScore
+
+            _roundResults.add(
+                RoundResult(
+                    guessedLocation = _userGuess.value!!,
+                    correctLocation = actualLocation,
+                    score = roundScore,
+                    distanceMiles = distance
+                )
+            )
         }
     }
 

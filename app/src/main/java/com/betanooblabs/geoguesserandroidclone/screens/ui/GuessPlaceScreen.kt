@@ -1,6 +1,7 @@
 package com.betanooblabs.geoguesserandroidclone.screens.ui
 
 import android.graphics.BitmapFactory
+import android.widget.Toast
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.animateFloatAsState
@@ -18,15 +19,10 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.AlertDialogDefaults.containerColor
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -39,7 +35,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -48,6 +43,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.compose.rememberNavController
 import com.betanooblabs.geoguesserandroidclone.R
 import com.betanooblabs.geoguesserandroidclone.screens.components.BlueBorderButton
 import com.betanooblabs.geoguesserandroidclone.screens.viewModel.GuessPlaceScreenViewModel
@@ -70,15 +66,16 @@ import com.google.maps.android.compose.rememberUpdatedMarkerState
 
 @Composable
 fun GuessPlaceScreen(
-    viewModel: GuessPlaceScreenViewModel = viewModel()
+    viewModel: GuessPlaceScreenViewModel,
+    onViewSummaryClick: () -> Unit,
 ) {
     val isMapOpen = remember { mutableStateOf(false) }
     val isConfirmed by viewModel.isConfirmed
     val score by viewModel.score
     val distance by viewModel.distanceMiles
     val round by viewModel.roundIndex
-    val userGuess by viewModel.userGuess
     val actualLocation = viewModel.actualLocation
+    val isGameOver = viewModel.isGameOver
 
     Box(modifier = Modifier.fillMaxSize()) {
 
@@ -97,10 +94,16 @@ fun GuessPlaceScreen(
             ScoreBoard(
                 round = round+1,
                 score = score ?: 0,
+                isGameOver = isGameOver,
                 distanceMiles = distance ?: 0.0,
                 onNextRoundClick = {
-                    isMapOpen.value = false
-                    viewModel.nextRound()
+                    if (viewModel.isGameOver){
+                        onViewSummaryClick()
+                    } else{
+                        isMapOpen.value = false
+                        viewModel.nextRound()
+                    }
+
                 }
             )
         }
@@ -327,6 +330,7 @@ fun MapContainer(
 fun ScoreBoard(
     round: Int,
     score: Int,
+    isGameOver: Boolean,
     distanceMiles: Double,
     onNextRoundClick: () -> Unit
 ) {
@@ -429,7 +433,7 @@ fun ScoreBoard(
             )
 
             BlueBorderButton(
-                "Next Round",
+                if (isGameOver) "View Summary" else "Next Round",
                 onNextRoundClick
             )
         }
