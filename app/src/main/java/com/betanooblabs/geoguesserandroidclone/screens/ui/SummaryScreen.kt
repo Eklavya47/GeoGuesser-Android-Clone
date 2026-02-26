@@ -1,6 +1,7 @@
 package com.betanooblabs.geoguesserandroidclone.screens.ui
 
 import android.graphics.BitmapFactory
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -13,7 +14,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.material3.Button
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
@@ -31,8 +31,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.betanooblabs.geoguesserandroidclone.R
 import com.betanooblabs.geoguesserandroidclone.model.RoundResult
-import com.betanooblabs.geoguesserandroidclone.screens.components.BlueBorderButton
+import com.betanooblabs.geoguesserandroidclone.screens.components.CustomButton
 import com.betanooblabs.geoguesserandroidclone.screens.viewModel.GuessPlaceScreenViewModel
+import com.betanooblabs.geoguesserandroidclone.ui.theme.custom_blue
 import com.betanooblabs.geoguesserandroidclone.ui.theme.custom_yellow
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.Dash
@@ -42,13 +43,18 @@ import com.google.maps.android.compose.MapUiSettings
 import com.google.maps.android.compose.Marker
 import com.google.maps.android.compose.Polyline
 import com.google.maps.android.compose.rememberCameraPositionState
-import com.google.maps.android.compose.rememberMarkerState
 import com.google.maps.android.compose.rememberUpdatedMarkerState
 
 @Composable
 fun SummaryScreen(
-    viewModel: GuessPlaceScreenViewModel
+    viewModel: GuessPlaceScreenViewModel,
+    onPlayAgain: () -> Unit,
+    onMainMenu: () -> Unit
 ) {
+    BackHandler(enabled = true) {
+        // Block system back
+    }
+
     val totalScore by viewModel.totalScore
     val roundResults = viewModel.roundResults
 
@@ -69,7 +75,9 @@ fun SummaryScreen(
             roundResults = roundResults,
             totalScore = totalScore,
             totalDistance = totalDistance,
-            modifier = Modifier.weight(1f)
+            modifier = Modifier.weight(1f),
+            onPlayAgain = onPlayAgain,
+            onMainMenu = onMainMenu
         )
     }
 }
@@ -132,7 +140,9 @@ fun SummaryContent(
     roundResults: List<RoundResult>,
     totalScore: Int,
     totalDistance: Double,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onPlayAgain: () -> Unit,
+    onMainMenu: () -> Unit
 ) {
 
     Column(
@@ -191,7 +201,7 @@ fun SummaryContent(
             }
         }
 
-        Spacer(modifier = Modifier.height(20.dp))
+        Spacer(modifier = Modifier.height(10.dp))
 
         Row(
             modifier = Modifier.fillMaxWidth(),
@@ -216,20 +226,28 @@ fun SummaryContent(
             )
         }
 
-        Spacer(modifier = Modifier.height(12.dp))
+        Spacer(modifier = Modifier.height(5.dp))
 
         Row(
             modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceEvenly
+            horizontalArrangement = Arrangement.spacedBy(12.dp)
         ) {
 
-            BlueBorderButton(
-                "PLAY AGAIN"
-            ) { }
+            CustomButton (
+                "PLAY AGAIN",
+                Color.Transparent,
+                Color.Green,
+                modifier = Modifier.weight(1f),
+                onPlayAgain
+            )
 
-            BlueBorderButton(
-                "MAIN MENU"
-            ) { }
+            CustomButton (
+                "MAIN MENU",
+                custom_blue,
+                Color.Black,
+                modifier = Modifier.weight(1f),
+                onMainMenu
+            )
         }
     }
 }

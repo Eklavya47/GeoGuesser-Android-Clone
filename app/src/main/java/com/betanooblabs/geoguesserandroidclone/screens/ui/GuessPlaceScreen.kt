@@ -45,8 +45,9 @@ import androidx.compose.ui.viewinterop.AndroidView
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.rememberNavController
 import com.betanooblabs.geoguesserandroidclone.R
-import com.betanooblabs.geoguesserandroidclone.screens.components.BlueBorderButton
+import com.betanooblabs.geoguesserandroidclone.screens.components.CustomButton
 import com.betanooblabs.geoguesserandroidclone.screens.viewModel.GuessPlaceScreenViewModel
+import com.betanooblabs.geoguesserandroidclone.ui.theme.custom_blue
 import com.betanooblabs.geoguesserandroidclone.ui.theme.custom_yellow
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.StreetViewPanorama
@@ -432,8 +433,11 @@ fun ScoreBoard(
                 fontSize = 16.sp
             )
 
-            BlueBorderButton(
+            CustomButton(
                 if (isGameOver) "View Summary" else "Next Round",
+                custom_blue,
+                Color.Black,
+                modifier = Modifier.fillMaxWidth(),
                 onNextRoundClick
             )
         }

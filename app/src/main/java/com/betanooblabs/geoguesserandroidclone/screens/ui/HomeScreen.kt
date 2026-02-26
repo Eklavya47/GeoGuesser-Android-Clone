@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -20,8 +21,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.betanooblabs.geoguesserandroidclone.screens.components.BlueBorderButton
+import com.betanooblabs.geoguesserandroidclone.screens.components.CustomButton
 import com.betanooblabs.geoguesserandroidclone.screens.components.GifImage
+import com.betanooblabs.geoguesserandroidclone.ui.theme.custom_blue
 
 @RequiresApi(Build.VERSION_CODES.P)
 @Composable
@@ -60,9 +62,24 @@ fun HomeScreen(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
 
-                BlueBorderButton(text = "GUESS THE PLACE", onFirstClick)
-                BlueBorderButton(text = "GUESS THE COUNTRY", onSecondClick)
-                BlueBorderButton(text = "PLAY WITH FRIENDS", onThirdClick)
+                CustomButton(text = "GUESS THE PLACE",
+                    custom_blue,
+                    Color.Black,
+                    modifier = Modifier.fillMaxWidth(),
+                    onFirstClick
+                )
+                CustomButton(text = "GUESS THE COUNTRY",
+                    custom_blue,
+                    Color.Black,
+                    modifier = Modifier.fillMaxWidth(),
+                    onSecondClick
+                )
+                CustomButton(text = "PLAY WITH FRIENDS",
+                    custom_blue,
+                    Color.Black,
+                    modifier = Modifier.fillMaxWidth(),
+                    onThirdClick
+                )
             }
         }
 

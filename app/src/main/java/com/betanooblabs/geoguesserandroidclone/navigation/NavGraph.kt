@@ -71,7 +71,23 @@ fun AppNavGraph(
             val viewModel: GuessPlaceScreenViewModel = viewModel(parentEntry)
 
             SummaryScreen(
-                viewModel = viewModel
+                viewModel = viewModel,
+
+                onPlayAgain = {
+                    navController.navigate(Screen.GuessPlace.route) {
+                        popUpTo(Screen.GuessPlace.route) {
+                            inclusive = true
+                        }
+                    }
+                },
+
+                onMainMenu = {
+                    navController.navigate(Screen.Home.route) {
+                        popUpTo(Screen.GuessPlace.route) {
+                            inclusive = true
+                        }
+                    }
+                }
             )
         }
     }

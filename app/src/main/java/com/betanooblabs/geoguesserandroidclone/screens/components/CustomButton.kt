@@ -1,9 +1,7 @@
 package com.betanooblabs.geoguesserandroidclone.screens.components
 
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.OutlinedButton
@@ -13,26 +11,29 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.betanooblabs.geoguesserandroidclone.ui.theme.custom_blue
 
 @Composable
-fun BlueBorderButton(
+fun CustomButton(
     text: String,
+    borderColor: Color,
+    backgroundColor: Color,
+    modifier: Modifier = Modifier,
     onClick: () -> Unit
 ) {
     OutlinedButton(
         onClick = onClick,
-        modifier = Modifier
-            .fillMaxWidth()
-            //.width(220.dp)
+        modifier = modifier
             .height(50.dp),
         shape = RoundedCornerShape(14.dp),
-        border = BorderStroke(2.dp, custom_blue),
+        border = BorderStroke(2.dp, borderColor),
         colors = ButtonDefaults.outlinedButtonColors(
-            containerColor = Color.Black,
+            containerColor = backgroundColor,
             contentColor = Color.White
         )
     ) {
-        Text(text = text, fontSize = 16.sp)
+        Text(
+            text = text,
+            fontSize = 16.sp
+        )
     }
 }
